@@ -88,6 +88,9 @@
       "pos": {
         "filename": "testdata/overrides/overrides_override.tf",
         "line": 14
+      },
+      "attributes": {
+        "unused": 2
       }
     }
   }

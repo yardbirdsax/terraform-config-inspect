@@ -16,6 +16,9 @@
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf",
                 "line": 1
+            },
+            "attributes": {
+                "unused": 2
             }
         },
         "bar": {
@@ -24,6 +27,9 @@
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf",
                 "line": 8
+            },
+            "attributes": {
+                "unused": 1
             }
         },
         "baz": {
@@ -32,6 +38,9 @@
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf.json",
                 "line": 3
+            },
+            "attributes": {
+                "unused": 12
             }
         }
     }

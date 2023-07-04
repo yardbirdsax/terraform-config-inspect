@@ -328,7 +328,7 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 
 		case "module":
 
-			content, _, contentDiags := block.Body.PartialContent(moduleCallSchema)
+			content, remaining, contentDiags := block.Body.PartialContent(moduleCallSchema)
 			diags = append(diags, contentDiags...)
 
 			name := block.Labels[0]
@@ -344,6 +344,10 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 			}
 
 			mod.ModuleCalls[name] = mc
+
+			attrs, attrDiags := remaining.JustAttributes()
+			diags = append(diags, attrDiags...)
+			mc.Attributes = ModuleAttributes(attrs)
 
 			if attr, defined := content.Attributes["source"]; defined {
 				var source string
