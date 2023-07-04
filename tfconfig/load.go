@@ -52,10 +52,7 @@ func IsModuleDir(dir string) bool {
 // how to handle directories that do not have tf files.
 func IsModuleDirOnFilesystem(fs FS, dir string) bool {
 	primaryPaths, _ := dirFiles(fs, dir)
-	if len(primaryPaths) == 0 {
-		return false
-	}
-	return true
+	return len(primaryPaths) == 0
 }
 
 func (m *Module) init(diags Diagnostics) {

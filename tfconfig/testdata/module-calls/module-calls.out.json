@@ -1,13 +1,37 @@
 {
     "path": "testdata/module-calls",
-
-    "required_providers": {},
-
-    "variables": {},
+    "required_providers": {
+        "external": {}
+    },
+    "variables": {
+        "something": {
+            "default": "foo",
+            "description": "A variable.",
+            "name": "something",
+            "pos": {
+                "filename": "testdata/module-calls/module-calls.tf",
+                "line": 1
+            },
+            "required": false,
+            "type": "string"
+        }
+    },
     "outputs": {},
-
     "managed_resources": {},
-    "data_resources": {},
+    "data_resources": {
+        "data.external.something": {
+            "mode": "data",
+            "name": "something",
+            "pos": {
+                "filename": "testdata/module-calls/module-calls.tf",
+                "line": 7
+            },
+            "provider": {
+                "name": "external"
+            },
+            "type": "external"
+        }
+    },
     "module_calls": {
         "foo": {
             "name": "foo",
@@ -15,10 +39,12 @@
             "version": "1.0.2",
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf",
-                "line": 1
+                "line": 11
             },
             "attributes": {
-                "unused": 2
+                "unused": 2,
+                "id": "data.external.something.result.id",
+                "something": "var.something"
             }
         },
         "bar": {
@@ -26,7 +52,7 @@
             "source": "./child",
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf",
-                "line": 8
+                "line": 20
             },
             "attributes": {
                 "unused": 1

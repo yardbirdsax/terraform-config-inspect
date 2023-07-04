@@ -19,13 +19,6 @@ type SourcePos struct {
 	Line     int    `json:"line"`
 }
 
-func sourcePos(filename string, line int) SourcePos {
-	return SourcePos{
-		Filename: filename,
-		Line:     line,
-	}
-}
-
 func sourcePosHCL(rng hcl.Range) SourcePos {
 	// We intentionally throw away the column information here because
 	// current and legacy HCL both disagree on the definition of a column

@@ -77,7 +77,8 @@
             "pos": {
                 "filename": "testdata/legacy-block-labels/legacy-block-labels.tf",
                 "line": 50
-            }
+            },
+            "attributes": {}
         }
     }
 }

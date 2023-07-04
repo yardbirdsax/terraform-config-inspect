@@ -5,15 +5,20 @@ package tfconfig
 
 import (
 	"bytes"
+	gojson "encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty/json"
 )
 
-type ModuleAttributes hcl.Attributes
+type ModuleAttributes struct {
+	hcl.Attributes
+}
 
 // ModuleCall represents a "module" block within a module. That is, a
 // declaration of a child module from inside its parent.
@@ -29,19 +34,44 @@ type ModuleCall struct {
 func (ma *ModuleAttributes) MarshalJSON() (data []byte, err error) {
 	out := &bytes.Buffer{}
 	out.WriteString("{")
-	for k, v := range *ma {
+	first := true
+	for k, v := range ma.Attributes {
+		if !first {
+			out.WriteString(",")
+		}
+		first = false
 		out.WriteString(strconv.Quote(k) + ":")
-		val, valDiags := v.Expr.Value(nil)
-		if valDiags.HasErrors() {
-			return nil, &multierror.Error{Errors: valDiags.Errs()}
+		expr := v.Expr
+		switch expr := expr.(type) {
+		case *hclsyntax.ScopeTraversalExpr:
+			s := []string{}
+			for _, t := range expr.Traversal {
+				switch t := t.(type) {
+				case hcl.TraverseAttr:
+					s = append(s, t.Name)
+				case hcl.TraverseRoot:
+					s = append(s, t.Name)
+				default:
+					return nil, fmt.Errorf("unexpected type encountered for traversal (%q): %T", k, t)
+				}
+			}
+			data, err := gojson.Marshal(strings.Join(s, "."))
+			if err != nil {
+				return nil, fmt.Errorf("error marshalling field (%q): %w", k, err)
+			}
+			out.Write(data)
+		default:
+			val, valDiags := v.Expr.Value(nil)
+			if valDiags.HasErrors() {
+				return nil, &multierror.Error{Errors: valDiags.Errs()}
+			}
+			valData, err := json.Marshal(val, val.Type())
+			if err != nil {
+				return nil, fmt.Errorf("error marshalling field (%q): %w", k, err)
+			}
+			out.Write(valData)
 		}
-		valData, err := json.Marshal(val, val.Type())
-		if err != nil {
-			return nil, fmt.Errorf("error marshalling value (field: %q): %w", k, err)
-		}
-		out.Write(valData)
 	}
 	out.WriteString("}")
-	data = append(data, out.Bytes()...)
-	return data, err
+	return out.Bytes(), err
 }
