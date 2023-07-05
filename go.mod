@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-config-inspect
+module github.com/yardbirdsax/terraparse
 
 require (
 	github.com/go-test/deep v1.0.3

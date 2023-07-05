@@ -1,7 +1,7 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Josh Feierman (original copyright HashiCorp, Inc).
 // SPDX-License-Identifier: MPL-2.0
 
-package tfconfig
+package terraparse
 
 import (
 	"encoding/json"

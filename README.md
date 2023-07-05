@@ -1,21 +1,24 @@
-# terraform-config-inspect
+# terraparse
 
 This repository contains a helper library for extracting high-level metadata
 about Terraform modules from their source code. It processes only a subset
-of the information Terraform itself would process, and in return it's able
-to be broadly compatible with modules written for many different versions of
+of the information Terraform itself would process; in return, it can
+be broadly compatible with modules written for many different versions of
 Terraform.
 
+This project was forked from the Hashicorp project
+[terraform-config-inspect](https://github.com/hashicorp/terraform-config-inspect).
+
 ```
-$ go get github.com/hashicorp/terraform-config-inspect
+$ go get github.com/yardbirdsax/terraparse
 ```
 
 ```go
-import "github.com/hashicorp/terraform-config-inspect/tfconfig"
+import "github.com/yardbirdsax/terraparse/"
 
 // ...
 
-module, diags := tfconfig.LoadModule(dir)
+module, diags := terraparse.LoadModule(dir)
 
 // ...
 ```
@@ -31,13 +34,13 @@ be lower in older language versions.
 
 ## Command Line Tool
 
-The primary way to use this repository is as a Go library, but as a convenience
-it also contains a CLI tool called `terraform-config-inspect`, installed
-automatically by the `go get` command above, that allows viewing module
-information in either a Markdown-like format or in JSON format.
+The primary way to use this repository is as a Go library, but as a convenience, it also contains a
+CLI tool called `terraparse` that allows viewing module information in either a Markdown-like format
+or JSON format. You can install the tool by running `go install
+github.com/yardbirdsax/terraparse/cmd/terraparse`.
 
 ```sh
-$ terraform-config-inspect path/to/module
+$ terraparse path/to/module
 ```
 ```markdown
 # Module `path/to/module`
@@ -135,24 +138,10 @@ $ terraform-config-inspect --json path/to/module
 
 ## Contributing
 
-This library and tool are intentionally focused on only extracting simple
-top-level metadata about a single Terraform module. This is to reduce the
-maintenance burden of keeping this codebase synchronized with changes to
-Terraform itself: the features extracted by this package are unlikely to change
-significantly in future versions.
+As with its upstream inspiration, this project is designed to allow parsing a limited set of
+Terraform's own dialect. While efforts may be made to keep in sync with additions or changes to
+that, there is no expectation that this will be done in a timely manner.
 
-For that reason, **we cannot accept external PRs for this codebase that add support for additional Terraform language features**.
-
-Furthermore, we consider this package feature-complete; if there is a feature
-you wish to see added, please open a GitHub issue first so we can discuss the
-feasability and design before submitting a pull request. We are unlikely to
-accept PRs that add features without discussion first.
-
-We would be happy to review PRs to fix bugs in existing functionality or to
-improve the usability of the Go package API, however. We will be hesitant about
-any breaking changes to the API, since this library is used by a number of
-existing tools and systems.
-
-To work on this codebase you will need a recent version of Go installed. Please
-ensure all files match the formatting rules applied by `go fmt` and that all
-unit tests are passing.
+Bug fixes are welcome so long as they include test coverage proving they work. If you would like to
+contribute an enhancement or extend the language support of this library, I would suggest opening an
+issue first for discussion.

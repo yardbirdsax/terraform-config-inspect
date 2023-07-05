@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Josh Feierman (original copyright HashiCorp, Inc).
 // SPDX-License-Identifier: MPL-2.0
 
 package main
@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hashicorp/terraform-config-inspect/tfconfig"
 	flag "github.com/spf13/pflag"
+	"github.com/yardbirdsax/terraparse"
 )
 
 var showJSON = flag.Bool("json", false, "produce JSON-formatted output")
@@ -24,7 +24,7 @@ func main() {
 		dir = "."
 	}
 
-	module, _ := tfconfig.LoadModule(dir)
+	module, _ := terraparse.LoadModule(dir)
 
 	if *showJSON {
 		showModuleJSON(module)
@@ -37,7 +37,7 @@ func main() {
 	}
 }
 
-func showModuleJSON(module *tfconfig.Module) {
+func showModuleJSON(module *terraparse.Module) {
 	j, err := json.MarshalIndent(module, "", "  ")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error producing JSON: %s\n", err)
@@ -47,8 +47,8 @@ func showModuleJSON(module *tfconfig.Module) {
 	os.Stdout.Write([]byte{'\n'})
 }
 
-func showModuleMarkdown(module *tfconfig.Module) {
-	err := tfconfig.RenderMarkdown(os.Stdout, module)
+func showModuleMarkdown(module *terraparse.Module) {
+	err := terraparse.RenderMarkdown(os.Stdout, module)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error rendering template: %s\n", err)
 		os.Exit(2)

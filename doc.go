@@ -1,7 +1,7 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Josh Feierman (original copyright HashiCorp, Inc).
 // SPDX-License-Identifier: MPL-2.0
 
-// Package tfconfig is a helper library that does careful, shallow parsing of
+// Package terraparse is a helper library that does careful, shallow parsing of
 // Terraform modules to provide access to high-level metadata while
 // remaining broadly compatible with configurations targeting various
 // different Terraform versions.
@@ -21,4 +21,4 @@
 // a result as possible even though the input may not be entirely valid. The
 // intended use-case is high-level analysis and indexing of externally-facing
 // module characteristics, as opposed to validating or even applying the module.
-package tfconfig
+package terraparse
