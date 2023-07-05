@@ -1,0 +1,64 @@
+{
+    "path": "testdata/resource-with-inputs",
+    "required_providers": {
+        "aws": {},
+        "notaws": {}
+    },
+    "variables": {
+        "instance_type": {
+            "default": null,
+            "name": "instance_type",
+            "pos": {
+                "filename": "testdata/resource-with-inputs/resource.tf",
+                "line": 1
+            },
+            "required": true,
+            "type": "string"
+        }
+    },
+    "outputs": {},
+    "managed_resources": {
+        "aws_instance.foo": {
+            "mode": "managed",
+            "type": "aws_instance",
+            "name": "foo",
+            "provider": {
+                "name": "aws"
+            },
+            "pos": {
+                "filename": "testdata/resource-with-inputs/resource.tf",
+                "line": 5
+            },
+            "attributes": {
+                "instance_type": "var.instance_type"
+            }
+        },
+        "aws_instance.json_bar": {
+            "mode": "managed",
+            "type": "aws_instance",
+            "name": "json_bar",
+            "provider": {
+                "name": "notaws"
+            },
+            "pos": {
+                "filename": "testdata/resource-with-inputs/resource.tf.json",
+                "line": 4
+            }
+        },
+        "aws_instance.json_baz": {
+            "mode": "managed",
+            "type": "aws_instance",
+            "name": "json_baz",
+            "provider": {
+                "name": "aws",
+                "alias": "aliased"
+            },
+            "pos": {
+                "filename": "testdata/resource-with-inputs/resource.tf.json",
+                "line": 7
+            }
+        }
+    },
+    "data_resources": {},
+    "module_calls": {}
+}

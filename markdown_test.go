@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/go-test/deep"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestRenderMarkdown(t *testing.T) {
@@ -46,10 +46,8 @@ func TestRenderMarkdown(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if diff := deep.Equal(buf.String(), string(expected)); diff != nil {
-				for _, problem := range diff {
-					t.Errorf("%s", problem)
-				}
+			if diff := cmp.Diff(buf.String(), string(expected)); diff != "" {
+				t.Errorf("actual and expected content differ:\n%s", diff)
 			}
 		})
 	}

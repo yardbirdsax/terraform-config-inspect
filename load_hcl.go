@@ -249,7 +249,7 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 
 		case "resource", "data":
 
-			content, _, contentDiags := block.Body.PartialContent(resourceSchema)
+			content, remaining, contentDiags := block.Body.PartialContent(resourceSchema)
 			diags = append(diags, contentDiags...)
 
 			typeName := block.Labels[0]
@@ -267,6 +267,13 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 			case "resource":
 				r.Mode = ManagedResourceMode
 				resourcesMap = mod.ManagedResources
+				attrs, attrDiags := NewAttributesFromBody(remaining, file)
+				diags = append(diags, attrDiags...)
+				if attrDiags.HasErrors() {
+					return diags
+				}
+				r.Attributes = attrs
+
 			case "data":
 				r.Mode = DataResourceMode
 				resourcesMap = mod.DataResources
@@ -347,7 +354,7 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 
 			attrs, attrDiags := remaining.JustAttributes()
 			diags = append(diags, attrDiags...)
-			mc.Attributes, attrDiags = NewModuleAttributes(attrs, file)
+			mc.Attributes, attrDiags = NewAttributes(attrs, file)
 			diags = append(diags, attrDiags...)
 
 			if attr, defined := content.Attributes["source"]; defined {
