@@ -44,7 +44,8 @@
             "attributes": {
                 "unused": 2,
                 "id": "data.external.something.result.id",
-                "something": "var.something"
+                "something": "var.something",
+                "something_else": "${var.something}-2"
             }
         },
         "bar": {
@@ -52,7 +53,7 @@
             "source": "./child",
             "pos": {
                 "filename": "testdata/module-calls/module-calls.tf",
-                "line": 20
+                "line": 21
             },
             "attributes": {
                 "unused": 1

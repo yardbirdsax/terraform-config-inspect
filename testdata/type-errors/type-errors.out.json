@@ -133,8 +133,7 @@
             "pos": {
                 "filename": "testdata/type-errors/type-errors.tf",
                 "line": 11
-            },
-            "attributes": {}
+            }
         }
     }
 }

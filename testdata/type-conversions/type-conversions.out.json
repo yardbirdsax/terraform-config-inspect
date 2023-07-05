@@ -65,8 +65,7 @@
             "pos": {
                 "filename": "testdata/type-conversions/type-conversions.tf",
                 "line": 10
-            },
-            "attributes": {}
+            }
         }
     }
 }
