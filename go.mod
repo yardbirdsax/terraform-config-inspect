@@ -1,7 +1,6 @@
-module github.com/hashicorp/terraform-config-inspect
+module github.com/yardbirdsax/terraparse
 
 require (
-	github.com/go-test/deep v1.0.3
 	github.com/google/go-cmp v0.3.0
 	github.com/hashicorp/hcl v0.0.0-20170504190234-a4b07c25de5f
 	github.com/hashicorp/hcl/v2 v2.0.0

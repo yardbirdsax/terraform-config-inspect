@@ -1,10 +1,12 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Josh Feierman (original copyright HashiCorp, Inc).
 # SPDX-License-Identifier: MPL-2.0
 
 name: Per-commit Checks
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
   pull_request:
 
@@ -12,8 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  unit_tests:
-    name: "unit tests"
+  test:
+    name: "fmt lint and test"
     runs-on: ubuntu-latest
 
     steps:
@@ -23,31 +25,10 @@ jobs:
         uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
         with:
           go-version: 1.18
-      - name: Go test
+      - name: "Run tests"
+        shell: bash
         run: |
-          go test ./...
-
-  fmt_and_vet:
-    name: "fmt and lint"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Fetch source code"
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      - name: Install Go
-        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
-        with:
-          go-version: 1.18
-      - name: "Check vet"
-        run: |
-          go vet ./...
-      - name: "Check fmt"
-        run: |
-          go fmt ./...
-          if [[ -z "$(git status --porcelain)" ]]; then
-            echo "Formatting is consistent with 'go fmt'."
-          else
-            echo "Run 'go fmt ./...' to automatically apply standard Go style to all packages."
-            git status --porcelain
-            exit 1
-          fi
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          make setup
+          make test
