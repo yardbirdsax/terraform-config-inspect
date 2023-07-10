@@ -12,13 +12,22 @@ import (
 	"github.com/zclconf/go-cty/cty/json"
 )
 
+// Attribute represents a single HCL attribute attached to a block. This struct includes the raw
+// attribute as well as a calculated field (Value) whose value depends upon the attribute's
+// definition in the raw HCL. See the field documentation for details.
 type Attribute struct {
 	*hcl.Attribute
+	// Value is a calculated field whose value depends upon the underlying HCL attribute's
+	// definition. If it is a static value (e.g., `foo = "bar"`), then `Value` will be that
+	// static value. If it is a calculated value (e.g., `data.something.something.id`,
+	// `resource.something.id`, `module.something.id`, or `function(something)`), then the
+	// text of that calculated value is the value of `Value`.
 	Value cty.Value
 }
 
 type Attributes map[string]*Attribute
 
+// NewAttributesFromBody constructs a map of Attributes from an HCL body object.
 func NewAttributesFromBody(body hcl.Body, file *hcl.File) (mas Attributes, diags hcl.Diagnostics) {
 	attrs, attrDiags := body.JustAttributes()
 	diags = append(diags, attrDiags...)
@@ -30,6 +39,7 @@ func NewAttributesFromBody(body hcl.Body, file *hcl.File) (mas Attributes, diags
 	return mas, diags
 }
 
+// NewAttributes contructs as map of Attributes from the raw HCL attributes.
 func NewAttributes(attrs hcl.Attributes, file *hcl.File) (mas Attributes, diags hcl.Diagnostics) {
 	if len(attrs) == 0 {
 		return nil, nil

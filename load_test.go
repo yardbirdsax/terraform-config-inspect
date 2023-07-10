@@ -5,9 +5,11 @@ package terraparse
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -106,4 +108,60 @@ func TestLoadModuleFromFilesystem(t *testing.T) {
 			}
 		})
 	}
+}
+
+func sortModuleMapKeys[v *ModuleCall | *Attribute](in map[string]v) []string {
+	out := make([]string, len(in))
+	for k := range in {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func ExampleLoadModule_modulecalls() {
+	got, err := LoadModule("testdata/module-calls")
+	if err != nil {
+		fmt.Printf("error loading file: %v", err)
+	}
+	if len(got.ModuleCalls) > 0 {
+		fmt.Println("Module calls:\n------")
+		sortedKeys := sortModuleMapKeys(got.ModuleCalls)
+		for _, k := range sortedKeys {
+			if mc, ok := got.ModuleCalls[k]; ok {
+				fmt.Printf("%s\n", mc.Name)
+				fmt.Printf("\tSource: %s\n", mc.Source)
+				fmt.Println("\tAttributes:")
+				sortedAttributeKeys := sortModuleMapKeys(mc.Attributes)
+				for _, ak := range sortedAttributeKeys {
+					if a, ok := mc.Attributes[ak]; ok {
+						fmt.Printf("\t\t%s: %s\n", a.Name, a.Value.GoString())
+					}
+				}
+				fmt.Println("---")
+			}
+		}
+	}
+
+	// Output:
+	// Module calls:
+	// ------
+	// bar
+	// 	Source: ./child
+	// 	Attributes:
+	// 		unused: cty.NumberIntVal(1)
+	// ---
+	// baz
+	// 	Source: ../elsewhere
+	// 	Attributes:
+	// 		unused: cty.NumberIntVal(12)
+	// ---
+	// foo
+	// 	Source: foo/bar/baz
+	// 	Attributes:
+	// 		id: cty.StringVal("data.external.something.result.id")
+	// 		something: cty.StringVal("var.something")
+	// 		something_else: cty.StringVal("${var.something}-2")
+	// 		unused: cty.NumberIntVal(2)
+	// ---
 }
