@@ -12,6 +12,8 @@ I forked this project from the Hashicorp project
 $ go get github.com/yardbirdsax/terraparse
 ```
 
+## Usage
+
 ```go
 import "github.com/yardbirdsax/terraparse/"
 
