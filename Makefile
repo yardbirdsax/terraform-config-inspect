@@ -8,7 +8,7 @@ fmt:
 
 .PHONY: test-fmt
 test-fmt:
-	@test -z $$(make fmt)
+	@test -z $(shell make fmt)
 
 .PHONY: lint
 lint:
