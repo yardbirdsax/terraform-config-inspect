@@ -25,6 +25,7 @@ type Attribute struct {
 	Value cty.Value
 }
 
+// Attributes is a map of Attribute objects by the name of the attribute.
 type Attributes map[string]*Attribute
 
 // NewAttributesFromBody constructs a map of Attributes from an HCL body object.
