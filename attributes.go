@@ -30,14 +30,21 @@ type Attributes map[string]*Attribute
 
 // NewAttributesFromBody constructs a map of Attributes from an HCL body object.
 func NewAttributesFromBody(body hcl.Body, file *hcl.File) (mas Attributes, diags hcl.Diagnostics) {
-	attrs, attrDiags := body.JustAttributes()
-	diags = append(diags, attrDiags...)
-	if attrDiags.HasErrors() {
-		return nil, diags
+	switch b := body.(type) {
+	case *hclsyntax.Body:
+		attrs := hclAttributesFromSyntax(b.Attributes)
+		mas, diags = NewAttributes(attrs, file)
 	}
-	mas, attrDiags = NewAttributes(attrs, file)
-	diags = append(diags, attrDiags...)
 	return mas, diags
+}
+
+func hclAttributesFromSyntax(i hclsyntax.Attributes) (a hcl.Attributes) {
+	a = make(hcl.Attributes, len(i))
+	for k, v := range i {
+		newAttr := v.AsHCLAttribute()
+		a[k] = newAttr
+	}
+	return a
 }
 
 // NewAttributes contructs as map of Attributes from the raw HCL attributes.

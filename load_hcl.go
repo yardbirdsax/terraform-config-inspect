@@ -352,10 +352,12 @@ func LoadModuleFromFile(file *hcl.File, mod *Module) hcl.Diagnostics {
 
 			mod.ModuleCalls[name] = mc
 
-			attrs, attrDiags := remaining.JustAttributes()
+			attrs, attrDiags := NewAttributesFromBody(remaining, file)
 			diags = append(diags, attrDiags...)
-			mc.Attributes, attrDiags = NewAttributes(attrs, file)
-			diags = append(diags, attrDiags...)
+			if attrDiags.HasErrors() {
+				return diags
+			}
+			mc.Attributes = attrs
 
 			if attr, defined := content.Attributes["source"]; defined {
 				var source string
